@@ -25,7 +25,8 @@ public class DefaultValuesSB {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultValuesSB.class.getName());
 
-    private static final String SEL_OBJECT_TYPES = "select * from obj_type";
+    private static final String SEL_OBJECT_TYPES = "select obj_type_id, obj_type_name, obj_type_char " +
+            "from table(sys_0001t.sel_obj_type())";
     private static final String SEL_DEFAULT_OBJECT_TYPE_ID = "select obj_type_def from dz_sys_param";
     private static final String FUN_UPD_DEFAULT_OBJECT_TYPE = "{? = call sys_0001t.upd_obj_type_def(?, ?, ?)}";
 
