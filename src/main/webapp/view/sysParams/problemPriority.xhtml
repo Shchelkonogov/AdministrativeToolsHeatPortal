@@ -27,7 +27,7 @@
                                 <h:outputText value="#{problemData.priority}" />
                             </f:facet>
                             <f:facet name="input">
-                                <p:inputNumber id="priority" value="#{problemData.priority}" emptyValue="zero" />
+                                <p:inputNumber id="priority" value="#{problemData.priority}" minValue="1" />
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
