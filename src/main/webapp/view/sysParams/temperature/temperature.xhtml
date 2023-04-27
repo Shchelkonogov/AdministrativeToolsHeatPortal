@@ -94,7 +94,7 @@
         </div>
     </h:form>
 
-    <p:dialog id="addTypeDialog" rendered="#{systemParamsUtil.write}" header="Создать новый справочник" widgetVar="addTypeDialog"
+    <p:dialog id="addTypeDialog" rendered="#{systemParamsUtil.write}" header="#{addDialogHeader}" widgetVar="addTypeDialog"
               width="800" height="325" modal="true" resizable="false">
 
         <p:ajax event="close" listener="#{bean.onAddTypeDialogClose()}" update="addForm"/>
@@ -135,7 +135,7 @@
                 <p:dataTable id="newTemperaturePropTable" value="#{bean.newTemperature.temperatureProps}" var="prop" widgetVar="newPropTable"
                              scrollable="true" scrollHeight="170" emptyMessage="#{global['table.empty.value']}"
                              editable="true">
-                    <p:column headerText="Температура" style="text-align: center;">
+                    <p:column headerText="#{table2Header1Name == null ? 'Температура' : table2Header1Name}" style="text-align: center;">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputText value="#{prop.tnv}" />
@@ -173,7 +173,7 @@
     </p:dialog>
 
     <p:dialog id="addPropDialog" rendered="#{systemParamsUtil.write}" header="#{bean.headerAddDialog}"
-              widgetVar="addPropDialog" width="550" modal="true" resizable="false">
+              widgetVar="addPropDialog" width="540" modal="true" resizable="false">
 
         <p:ajax event="close" listener="#{bean.onAddPropDialogClose()}" update="addPropForm"/>
 
@@ -181,7 +181,7 @@
             <div style="display: flex">
                 <div style="flex: 1 1 0;">
                     <div style="text-align: center; margin-bottom: 5px;">
-                        <p:outputLabel value="Температура" for="@next" style="margin-right: 5px;"/>
+                        <p:outputLabel value="#{table2Header1Name == null ? 'Температура' : table2Header1Name}" for="@next" style="margin-right: 5px;"/>
                         <p:inputNumber required="true" value="#{bean.newTemperatureProp.tnv}"
                                        requiredMessage="#{global['validation.view.text']}" style="width: 300px;"/>
                     </div>
@@ -191,7 +191,7 @@
                 </div>
                 <div style="flex: 1 1 0;">
                     <div style="text-align: center; margin-bottom: 5px;">
-                        <p:outputLabel value="Значаение" for="@next" style="margin-right: 5px;"/>
+                        <p:outputLabel value="Значение" for="@next" style="margin-right: 5px;"/>
                         <p:inputNumber required="true" value="#{bean.newTemperatureProp.value}"
                                        requiredMessage="#{global['validation.view.text']}" style="width: 300px;"/>
                     </div>
