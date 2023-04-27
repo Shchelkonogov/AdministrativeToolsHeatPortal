@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class StructDevicesMB extends StructMB implements Serializable {
 
     private static final String HEADER = "Типы устройств";
-    private static final String DIALOG_HEADER = "Создать новое устройство";
+    private static final String DIALOG_HEADER = "Создать новую сущность";
     private static final String PROP_HEADER = "Свойства устройства";
 
     @EJB(name = "structDevicesSB", mappedName = "ejb/structDevicesSB")

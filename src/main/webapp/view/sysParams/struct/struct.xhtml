@@ -123,12 +123,14 @@
             <div style="display: flex; align-items: center; justify-content: space-evenly; margin-bottom: 5px;">
                 <div>
                     <p:outputLabel value="Название" for="@next" style="margin-right: 5px;"/>
-                    <p:inputText value="#{bean.newStructType.name}" required="true" requiredMessage="#{global['validation.view.text']}"/>
+                    <p:inputText value="#{bean.newStructType.name}" required="true" size="30"
+                                 requiredMessage="#{global['validation.view.text']}"/>
                     <p:message style="margin-left: 5px;" for="@previous" />
                 </div>
                 <div>
                     <p:outputLabel value="Код" for="@next" style="margin-right: 5px;"/>
-                    <p:inputText value="#{bean.newStructType.typeChar}" required="true" requiredMessage="#{global['validation.view.text']}"/>
+                    <p:inputText value="#{bean.newStructType.typeChar}" required="true" maxlength="5" size="5"
+                                 requiredMessage="#{global['validation.view.text']}"/>
                     <p:message style="margin-left: 5px;" for="@previous" />
                 </div>
             </div>

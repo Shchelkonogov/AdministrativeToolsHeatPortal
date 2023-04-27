@@ -1,6 +1,7 @@
 package ru.tecon.admTools.systemParams.model.struct;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -66,6 +67,19 @@ public class StructType implements Serializable, Comparable<StructType> {
                 .add("typeChar='" + typeChar + "'")
                 .add("parentID=" + parentID)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StructType that = (StructType) o;
+        return id == that.id && Objects.equals(name, that.name) && Objects.equals(typeChar, that.typeChar) && Objects.equals(parentID, that.parentID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, typeChar, parentID);
     }
 
     @Override
