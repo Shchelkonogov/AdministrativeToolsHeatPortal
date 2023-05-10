@@ -10,11 +10,9 @@ import org.primefaces.model.TreeNode;
 import ru.tecon.admTools.systemParams.SystemParamException;
 import ru.tecon.admTools.systemParams.cdi.SystemParamsUtilMB;
 import ru.tecon.admTools.systemParams.cdi.converter.MyConverter;
-import ru.tecon.admTools.systemParams.ejb.MeasureSB;
 import ru.tecon.admTools.systemParams.ejb.SysPropSB;
 import ru.tecon.admTools.systemParams.ejb.struct.StructCurrentRemote;
 import ru.tecon.admTools.systemParams.ejb.struct.StructSB;
-import ru.tecon.admTools.systemParams.model.Measure;
 import ru.tecon.admTools.systemParams.model.SysProp;
 import ru.tecon.admTools.systemParams.model.struct.*;
 
@@ -55,7 +53,6 @@ public abstract class StructMB implements Serializable, MyConverter {
     private List<PropValType> propValTypes;
     private List<PropCat> propCat;
     private List<SpHeader> spHeaders;
-    private List<Measure> measures;
 
     private boolean disableRemoveStructBtn = true;
     private boolean disableRemoveStructPropBtn = true;
@@ -72,9 +69,6 @@ public abstract class StructMB implements Serializable, MyConverter {
 
     @EJB
     private SysPropSB sysPropSB;
-
-    @EJB
-    private MeasureSB measureSB;
 
     @Inject
     private SystemParamsUtilMB utilMB;
@@ -193,7 +187,6 @@ public abstract class StructMB implements Serializable, MyConverter {
         propValTypes = structBean.getPropValTypes();
         propCat = structBean.getPropCat();
         spHeaders = structBean.getSpHeaders();
-        measures = measureSB.getMeasures();
     }
 
     /**
@@ -424,10 +417,6 @@ public abstract class StructMB implements Serializable, MyConverter {
 
     public List<SpHeader> getSpHeaders() {
         return spHeaders;
-    }
-
-    public List<Measure> getMeasures() {
-        return measures;
     }
 
     public boolean isDisableRemoveStructBtn() {

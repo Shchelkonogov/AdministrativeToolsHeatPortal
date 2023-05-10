@@ -4,6 +4,12 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
+    <h:form>
+        <p:remoteCommand name="saveMeasureWrapper" onstart="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide();"
+                         action="#{measureMB.onAddMeasure()}" rendered="#{systemParamsUtil.write}"
+                         update="measureForm:measureTable measureForm:btnRemove growl" />
+    </h:form>
+
     <h:form id="measureForm" style="height: 100%;">
         <div style="display: flex; align-items: center; justify-content: space-between;
                 border: 1px solid #c8c8c8; background-color: #f4f4f4; border-top-right-radius: 3px;
@@ -14,15 +20,14 @@
                                  disabled="#{measureMB.disableRemoveBtn}" action="#{measureMB.onRemoveMeasure}"
                                  onclick="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide();"
                                  update="measureForm:measureTable measureForm:btnRemove growl"
-                                 rendered="#{systemParamsUtil.write}" />
+                                 rendered="#{systemParamsUtil.write}"/>
                 <p:commandButton icon="btnAdd" styleClass="iconOnlyButton btnRight"
-                                 action="#{measureMB.onAddNew()}" update="measureForm:measureTable"
-                                 rendered="#{systemParamsUtil.write}" />
+                                 onclick="PF('addMeasureDialog').show();" rendered="#{systemParamsUtil.write}"/>
             </div>
         </div>
         <div style="border: 1px solid #c8c8c8; height: calc(100% - 5px); padding: 3px;">
             <div style="height: 100%;">
-                <p:dataTable id="measureTable" var="measureData" widgetVar="measureTable" value="#{measureMB.measures}"
+                <p:dataTable id="measureTable" var="measureData" widgetVar="measureTable" value="#{measureControllerApplication.measures}"
                              scrollable="true" scrollHeight="100%" emptyMessage="#{global['table.empty.value']}"
                              editable="#{systemParamsUtil.write}" disabledSelection="#{!systemParamsUtil.write}"
                              selectionMode="single" selection="#{measureMB.selectedMeasure}"
@@ -60,4 +65,28 @@
             </div>
         </div>
     </h:form>
+
+    <p:dialog id="addMeasureDialog" rendered="#{systemParamsUtil.write}" header="Добавить новую единицу измерения"
+              widgetVar="addMeasureDialog" modal="true" resizable="false" onShow="PF('addMeasureDialog').initPosition();">
+
+        <p:ajax event="close" listener="#{measureMB.onAddMeasureDialogClose()}" update="addMeasureForm"/>
+        <h:form id="addMeasureForm">
+            <h:panelGrid columns="3" style="margin-bottom: 35px;">
+                <p:outputLabel value="Название" for="@next"/>
+                <p:inputText required="true" value="#{measureMB.addMeasure.name}"
+                             requiredMessage="#{global['validation.view.text']}"/>
+                <p:message for="@previous"/>
+
+                <p:outputLabel value="Обозначение" for="@next"/>
+                <p:inputText required="true" value="#{measureMB.addMeasure.shortName}"
+                             requiredMessage="#{global['validation.view.text']}"/>
+                <p:message for="@previous"/>
+            </h:panelGrid>
+
+            <p:commandButton value="Сохранить" style="position: absolute; bottom: 5px; right: 95px;"
+                             validateClient="true" update="addMeasureForm" action="#{measureMB.addMeasureWrapper}"/>
+            <p:commandButton value="Отмена" styleClass="ui-button-secondary" style="position: absolute; bottom: 5px; right: 5px;"
+                             onclick="PF('addMeasureDialog').hide();"/>
+        </h:form>
+    </p:dialog>
 </ui:composition>

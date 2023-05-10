@@ -15,9 +15,4 @@ public interface MyConverter {
      * @return список типо свойств
      */
     List<PropValType> getPropValTypes();
-
-    /**
-     * @return список единиц измерений
-     */
-    List<Measure> getMeasures();
 }

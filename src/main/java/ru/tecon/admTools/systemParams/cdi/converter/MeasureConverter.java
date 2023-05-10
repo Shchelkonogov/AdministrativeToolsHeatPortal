@@ -1,5 +1,6 @@
 package ru.tecon.admTools.systemParams.cdi.converter;
 
+import ru.tecon.admTools.systemParams.cdi.scope.application.MeasureController;
 import ru.tecon.admTools.systemParams.model.Measure;
 
 import javax.el.ValueExpression;
@@ -18,9 +19,9 @@ public class MeasureConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         ValueExpression vex = context.getApplication().getExpressionFactory()
-                .createValueExpression(context.getELContext(), "#{" + component.getAttributes().get("bean") + "}", MyConverter.class);
+                .createValueExpression(context.getELContext(), "#{measureControllerApplication}", MeasureController.class);
 
-        MyConverter divisions = (MyConverter) vex.getValue(context.getELContext());
+        MeasureController divisions = (MeasureController) vex.getValue(context.getELContext());
 
         return divisions.getMeasures().stream()
                 .filter(measure -> measure.getId() == Integer.parseInt(value))

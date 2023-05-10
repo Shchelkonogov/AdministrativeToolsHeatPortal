@@ -189,9 +189,8 @@
                         <f:facet name="input">
                             <h:selectOneMenu value="#{prop.measure}" style="width: 100%;">
                                 <f:converter converterId="measureConverter"/>
-                                <f:attribute name="bean" value="#{beanName}"/>
-                                <f:selectItems value="#{bean.measures}" var="measure"
-                                               itemLabel="#{measure.name} (#{measure.shortName})" itemValue="#{measure}"/>
+                                <f:selectItems value="#{measureControllerApplication.measures}" var="measureItem"
+                                               itemLabel="#{measureItem.name} (#{measureItem.shortName})" itemValue="#{measureItem}"/>
                             </h:selectOneMenu>
                         </f:facet>
                     </p:cellEditor>
@@ -277,9 +276,8 @@
                     <p:outputLabel value="Единицы измерения" for="@next"/>
                     <p:selectOneMenu value="#{bean.newStructTypeProp.measure}" style="width: 200px;">
                         <f:converter converterId="measureConverter"/>
-                        <f:attribute name="bean" value="#{beanName}"/>
-                        <f:selectItems value="#{bean.measures}" var="measure"
-                                       itemLabel="#{measure.name} (#{measure.shortName})" itemValue="#{measure}"/>
+                        <f:selectItems value="#{measureControllerApplication.measures}" var="measureItem"
+                                       itemLabel="#{measureItem.name} (#{measureItem.shortName})" itemValue="#{measureItem}"/>
                     </p:selectOneMenu>
                 </div>
                 <div>

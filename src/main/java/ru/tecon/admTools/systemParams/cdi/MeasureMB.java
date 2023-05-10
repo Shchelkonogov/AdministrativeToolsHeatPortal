@@ -1,12 +1,13 @@
 package ru.tecon.admTools.systemParams.cdi;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import ru.tecon.admTools.systemParams.SystemParamException;
+import ru.tecon.admTools.systemParams.cdi.scope.application.MeasureController;
 import ru.tecon.admTools.systemParams.ejb.MeasureSB;
 import ru.tecon.admTools.systemParams.model.Measure;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -14,24 +15,24 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * Контроллер для формы единицы измерений
+ *
  * @author Maksim Shchelkonogov
  */
 @Named("measureMB")
 @ViewScoped
 public class MeasureMB implements Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger(MeasureMB.class.getName());
-
-    private List<Measure> measures = new ArrayList<>();
     private Measure selectedMeasure;
+    private Measure addMeasure = new Measure();
 
     private boolean disableRemoveBtn = true;
+
+    @Inject
+    private transient Logger logger;
 
     @EJB
     private MeasureSB measureSB;
@@ -39,30 +40,23 @@ public class MeasureMB implements Serializable {
     @Inject
     private SystemParamsUtilMB utilMB;
 
-    @PostConstruct
-    private void init() {
-        measures = measureSB.getMeasures();
-    }
+    @Inject
+    private MeasureController measures;
 
     /**
      * Обработчик сохранения изменения строки
+     *
      * @param event событие
      */
     public void onRowEdit(RowEditEvent<Measure> event) {
-        LOGGER.info("update row " + event.getObject());
-
-        Measure measure = event.getObject();
+        logger.info("update row " + event.getObject());
 
         try {
-            if (measure.getId() == 0) {
-                measure.setId(measureSB.addMeasure(measure, utilMB.getLogin(), utilMB.getIp()));
-            } else {
-                measureSB.updateMeasure(measure, utilMB.getLogin(), utilMB.getIp());
-            }
+            measureSB.updateMeasure(event.getObject(), utilMB.getLogin(), utilMB.getIp());
+            measures.init();
         } catch (SystemParamException e) {
             FacesContext.getCurrentInstance()
                     .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка обновления", e.getMessage()));
-            measures = measureSB.getMeasures();
         }
 
         selectedMeasure = null;
@@ -71,10 +65,11 @@ public class MeasureMB implements Serializable {
 
     /**
      * Обработчик события выделения строки
+     *
      * @param event событие
      */
     public void onRowSelect(SelectEvent<Measure> event) {
-        LOGGER.info("select link: " + event.getObject());
+        logger.info("select link: " + event.getObject());
 
         disableRemoveBtn = false;
     }
@@ -83,7 +78,7 @@ public class MeasureMB implements Serializable {
      * Обработчик удаления единицы измерения, возникает при нажатии на кнопку удалить (-)
      */
     public void onRemoveMeasure() {
-        LOGGER.info("remove measure: " + selectedMeasure);
+        logger.info("remove measure: " + selectedMeasure);
 
         try {
             measureSB.removeMeasure(selectedMeasure, utilMB.getLogin(), utilMB.getIp());
@@ -91,22 +86,39 @@ public class MeasureMB implements Serializable {
             selectedMeasure = null;
             disableRemoveBtn = true;
 
-            measures = measureSB.getMeasures();
+            measures.init();
         } catch (SystemParamException e) {
             FacesContext.getCurrentInstance()
                     .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка удаления", e.getMessage()));
         }
     }
 
-    /**
-     * Обработчик добавления новой единицы измерений, нажатие на копку добавить единицу измерения (+)
-     */
-    public void onAddNew() {
-        measures.add(new Measure("Новая единица измерения"));
+    public void addMeasureWrapper() {
+        PrimeFaces.current().executeScript("saveMeasureWrapper();");
     }
 
-    public List<Measure> getMeasures() {
-        return measures;
+    /**
+     * Добавление новой единицы измерения
+     */
+    public void onAddMeasure() {
+        logger.info("add new measure " + addMeasure);
+
+        try {
+            measureSB.addMeasure(addMeasure, utilMB.getLogin(), utilMB.getIp());
+            measures.init();
+
+            PrimeFaces.current().executeScript("PF('addMeasureDialog').hide();");
+        } catch (SystemParamException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка обновления", e.getMessage()));
+        }
+
+        selectedMeasure = null;
+        disableRemoveBtn = true;
+    }
+
+    public void onAddMeasureDialogClose() {
+        addMeasure = new Measure();
     }
 
     public Measure getSelectedMeasure() {
@@ -119,5 +131,13 @@ public class MeasureMB implements Serializable {
 
     public boolean isDisableRemoveBtn() {
         return disableRemoveBtn;
+    }
+
+    public Measure getAddMeasure() {
+        return addMeasure;
+    }
+
+    public void setAddMeasure(Measure addMeasure) {
+        this.addMeasure = addMeasure;
     }
 }
