@@ -218,3 +218,11 @@ body .ui-button.ui-button-secondary.ui-button-flat:enabled:active, body .ui-spli
 #divisionPanel\:structType > .ui-treetable-scrollable-body {
     height: calc(100% - 70px);
 }
+
+/* Что бы не разбегалась ширина колонок шапки и значений в таблице, относится к treeTable */
+#divisionPanel\:structType .ui-treetable-scrollable-body .ui-treetable-scrollable-theadclone tr th>* {
+    display: block;
+    height: 0;
+    padding: 0;
+    border: 0;
+}
