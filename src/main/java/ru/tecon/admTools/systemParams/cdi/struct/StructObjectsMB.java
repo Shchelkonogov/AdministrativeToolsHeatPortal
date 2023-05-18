@@ -1,7 +1,7 @@
 package ru.tecon.admTools.systemParams.cdi.struct;
 
 import ru.tecon.admTools.systemParams.SystemParamException;
-import ru.tecon.admTools.systemParams.cdi.DefaultValuesSessionMB;
+import ru.tecon.admTools.systemParams.cdi.scope.application.ObjectTypeController;
 import ru.tecon.admTools.systemParams.ejb.struct.StructCurrentRemote;
 import ru.tecon.admTools.systemParams.ejb.struct.StructSB;
 import ru.tecon.admTools.systemParams.model.struct.StructType;
@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Контроллер для формы объекты группы структур
+ *
  * @author Maksim Shchelkonogov
  */
 @Named("structObjects")
@@ -54,25 +55,25 @@ public final class StructObjectsMB extends StructMB implements Serializable {
     }
 
     @Inject
-    private DefaultValuesSessionMB defaultValuesSession;
+    private ObjectTypeController objectTypeController;
 
     @Override
     List<StructType> getStructTypes() {
         List<StructType> result = new ArrayList<>();
-        defaultValuesSession.getObjectTypes().forEach(objectType -> result.add(new StructType(objectType.getId(), objectType.getName(), objectType.getCode())));
+        objectTypeController.getObjectTypes().forEach(objectType -> result.add(new StructType(objectType.getId(), objectType.getName(), objectType.getCode())));
         return result;
     }
 
     @Override
     int addStruct(StructType structType, String login, String ip) throws SystemParamException {
         int result = super.addStruct(structType, login, ip);
-        defaultValuesSession.loadDefaultTypes();
+        objectTypeController.loadDefaultTypes();
         return result;
     }
 
     @Override
     void removeStruct(StructType structType, String login, String ip) throws SystemParamException {
         super.removeStruct(structType, login, ip);
-        defaultValuesSession.loadDefaultTypes();
+        objectTypeController.loadDefaultTypes();
     }
 }

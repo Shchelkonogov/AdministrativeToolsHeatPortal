@@ -1,6 +1,7 @@
 package ru.tecon.admTools.systemParams.cdi;
 
 import ru.tecon.admTools.systemParams.SystemParamException;
+import ru.tecon.admTools.systemParams.cdi.scope.application.ObjectTypeController;
 import ru.tecon.admTools.systemParams.ejb.DefaultValuesSB;
 import ru.tecon.admTools.systemParams.model.ObjectType;
 
@@ -19,24 +20,26 @@ import java.util.logging.Logger;
 
 /**
  * Контроллер для формы значения по умолчанию
+ *
  * @author Maksim Shchelkonogov
  */
 @Named("defaultValues")
 @ViewScoped
 public class DefaultValuesMB implements Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultValuesMB.class.getName());
-
     private ObjectType selectedObjectType;
 
     private String selectedDataBase;
     private List<String> dataBaseList = new LinkedList<>();
 
+    @Inject
+    private transient Logger logger;
+
     @EJB
     private DefaultValuesSB defaultValuesBean;
 
     @Inject
-    private DefaultValuesSessionMB valuesSessionMB;
+    private ObjectTypeController objectTypeController;
 
     @Inject
     private SystemParamsUtilMB utilMB;
@@ -45,7 +48,7 @@ public class DefaultValuesMB implements Serializable {
     private void init() {
         loadDataBaseList();
 
-        selectedObjectType = valuesSessionMB.getDefaultObjectType();
+        selectedObjectType = objectTypeController.getDefaultObjectType();
     }
 
     /**
@@ -60,7 +63,7 @@ public class DefaultValuesMB implements Serializable {
             dataBaseList.remove(defaultDataBase);
             dataBaseList.add(0, defaultDataBase);
         } catch (SystemParamException e) {
-            LOGGER.log(Level.WARNING, "error load default data base", e);
+            logger.log(Level.WARNING, "error load default data base", e);
         }
     }
 
@@ -68,13 +71,13 @@ public class DefaultValuesMB implements Serializable {
      * обработка сохранения нового типа объекта по умолчанию
      */
     public void onUpdateDefaultType() {
-        LOGGER.info("update default type " + selectedObjectType);
+        logger.info("update default type " + selectedObjectType);
 
         try {
             defaultValuesBean.updateDefaultObjectType(selectedObjectType, utilMB.getLogin(), utilMB.getIp());
 
-            valuesSessionMB.loadDefaultTypes();
-            selectedObjectType = valuesSessionMB.getDefaultObjectType();
+            objectTypeController.loadDefaultTypes();
+            selectedObjectType = objectTypeController.getDefaultObjectType();
         } catch (SystemParamException e) {
             FacesContext.getCurrentInstance()
                     .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка обновления", e.getMessage()));
@@ -85,7 +88,7 @@ public class DefaultValuesMB implements Serializable {
      * Обработка сохранения нового имени базы по умолчанию
      */
     public void onUpdateDefaultDataBase() {
-        LOGGER.info("update default data base " + selectedDataBase);
+        logger.info("update default data base " + selectedDataBase);
 
         try {
             defaultValuesBean.updateDefaultDataBase(selectedDataBase, utilMB.getLogin(), utilMB.getIp());

@@ -8,54 +8,37 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Stateless bean для получения данных по форме связь объектов
+ *
  * @author Maksim Shchelkonogov
  */
 @Stateless
 @LocalBean
 public class ObjectLinksSB {
 
-    private static final Logger LOGGER = Logger.getLogger(ObjectLinksSB.class.getName());
-
-    private static final String SELECT_OBJECT_TYPES = "select * from table(sys_0001t.sel_obj_type())";
     private static final String SELECT_OBJECT_LINKS = "select * from table(sys_0001t.sel_rel_type())";
     private static final String FUN_UPDATE_REL_TYPE = "{? = call sys_0001t.upd_rel_type(?, ?, ?, ?, ?, ?)}";
     private static final String FUN_ADD_REL_TYPE = "{? = call sys_0001t.add_rel_type(?, ?, ?, ?, ?, ?)}";
     private static final String FUN_DEL_REL_TYPE = "{? = call sys_0001t.del_rel_type(?, ?, ?, ?)}";
 
+    @Inject
+    private Logger logger;
+
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
     /**
-     * Функция получения типов объектов
-     * @return типы объектов
-     */
-    public Map<Integer, String> getObjectTypes() {
-        Map<Integer, String> result = new HashMap<>();
-        try (Connection connect = ds.getConnection();
-             PreparedStatement stm = connect.prepareStatement(SELECT_OBJECT_TYPES)) {
-            ResultSet res = stm.executeQuery();
-            while (res.next()) {
-                result.put(res.getInt(1), res.getString(2));
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "error load object types", e);
-        }
-        return result;
-    }
-
-    /**
      * Получение списка связей объектов
+     *
      * @return связи объектов
      */
     public List<ObjectLink> getObjectLinks() {
@@ -68,16 +51,17 @@ public class ObjectLinksSB {
                         res.getInt("obj_type_id1"), res.getInt("obj_type_id2")));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "error load object types", e);
+            logger.log(Level.WARNING, "error load object types", e);
         }
         return result;
     }
 
     /**
      * Обновление существующей связи
-     * @param link связь
+     *
+     * @param link  связь
      * @param login имя пользователя
-     * @param ip аддрес пользователя
+     * @param ip    аддрес пользователя
      * @throws SystemParamException в случае ошибки записи в базу
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -94,22 +78,23 @@ public class ObjectLinksSB {
 
             cStm.executeUpdate();
 
-            LOGGER.info("update link " + link.getName() + " result " + cStm.getInt(1));
+            logger.info("update link " + link.getName() + " result " + cStm.getInt(1));
 
             if (cStm.getInt(1) != 0) {
                 throw new SystemParamException("Ошибка обновления " + link.getName());
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "error update object link", e);
+            logger.log(Level.WARNING, "error update object link", e);
             throw new SystemParamException("Внутренняя ошибка сервера");
         }
     }
 
     /**
      * Создание новой связи
-     * @param link связь
+     *
+     * @param link  связь
      * @param login имя пользователя
-     * @param ip аддрес пользователя
+     * @param ip    аддрес пользователя
      * @return уникальный идентификатор, присвоенный базой
      * @throws SystemParamException в случае ошибки создания новой связи в базе
      */
@@ -127,23 +112,24 @@ public class ObjectLinksSB {
 
             cStm.executeUpdate();
 
-            LOGGER.info("add link " + link.getName() + " result " + cStm.getInt(1) + " new id " + cStm.getInt(5));
+            logger.info("add link " + link.getName() + " result " + cStm.getInt(1) + " new id " + cStm.getInt(5));
 
             if (cStm.getInt(1) != 0) {
                 throw new SystemParamException("Ошибка создания " + link.getName());
             }
             return cStm.getInt(5);
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "error add object link", e);
+            logger.log(Level.WARNING, "error add object link", e);
             throw new SystemParamException("Внутренняя ошибка сервера");
         }
     }
 
     /**
      * Удаления связи
-     * @param link связь
+     *
+     * @param link  связь
      * @param login имя пользователя
-     * @param ip аддрес пользователя
+     * @param ip    аддрес пользователя
      * @throws SystemParamException ошибка удаления свзяи в базе
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -158,13 +144,13 @@ public class ObjectLinksSB {
 
             cStm.executeUpdate();
 
-            LOGGER.info("remove link " + link.getName() + " result " + cStm.getInt(1));
+            logger.info("remove link " + link.getName() + " result " + cStm.getInt(1));
 
             if (cStm.getInt(1) != 0) {
                 throw new SystemParamException("Ошибка удаления " + cStm.getString(3));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "error remove object link", e);
+            logger.log(Level.WARNING, "error remove object link", e);
             throw new SystemParamException("Внутренняя ошибка сервера");
         }
     }

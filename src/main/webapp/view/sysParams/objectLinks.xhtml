@@ -48,12 +48,12 @@
                         <p:cellEditor disabled="#{!systemParamsUtil.write}">
                             <f:facet name="output">
                                 <h:outputText style="display: block;"
-                                              value="#{objectLinks.objectTypes.get(objectLinksData.objectTypeLink1)}" />
+                                              value="#{objectTypeControllerApplication.getObjectNameById(objectLinksData.objectTypeLink1)}" />
                             </f:facet>
                             <f:facet name="input">
                                 <h:selectOneMenu value="#{objectLinksData.objectTypeLink1}" style="width: 100%;">
-                                    <f:selectItems value="#{objectLinks.objectTypesAsSet}" var="type"
-                                                   itemValue="#{type.key}" itemLabel="#{type.value}"/>
+                                    <f:selectItems value="#{objectTypeControllerApplication.objectTypes}" var="type"
+                                                   itemValue="#{type.id}" itemLabel="#{type.name}"/>
                                 </h:selectOneMenu>
                             </f:facet>
                         </p:cellEditor>
@@ -62,12 +62,12 @@
                         <p:cellEditor disabled="#{!systemParamsUtil.write}">
                             <f:facet name="output">
                                 <h:outputText style="display: block;"
-                                              value="#{objectLinks.objectTypes.get(objectLinksData.objectTypeLink2)}" />
+                                              value="#{objectTypeControllerApplication.getObjectNameById(objectLinksData.objectTypeLink2)}" />
                             </f:facet>
                             <f:facet name="input">
                                 <h:selectOneMenu value="#{objectLinksData.objectTypeLink2}" style="width: 100%;">
-                                    <f:selectItems value="#{objectLinks.objectTypesAsSet}" var="type"
-                                                   itemValue="#{type.key}" itemLabel="#{type.value}"/>
+                                    <f:selectItems value="#{objectTypeControllerApplication.objectTypes}" var="type"
+                                                   itemValue="#{type.id}" itemLabel="#{type.name}"/>
                                 </h:selectOneMenu>
                             </f:facet>
                         </p:cellEditor>

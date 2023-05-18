@@ -20,10 +20,10 @@
                     <p:selectOneMenu id="objectTypeSelector" value="#{defaultValues.selectedObjectType}"
                                      style="width: 300px; margin-top: 5px;" rendered="#{systemParamsUtil.write}">
                         <f:converter converterId="objectTypeConverter" />
-                        <f:selectItems value="#{defaultValuesSession.objectTypes}" var="objType"
+                        <f:selectItems value="#{objectTypeControllerApplication.objectTypes}" var="objType"
                                        itemLabel="#{objType.name}" itemValue="#{objType}" />
                     </p:selectOneMenu>
-                    <h:outputText rendered="#{!systemParamsUtil.write}" value="#{defaultValuesSession.defaultObjectType.name}"/>
+                    <h:outputText rendered="#{!systemParamsUtil.write}" value="#{objectTypeControllerApplication.defaultObjectType.name}"/>
                 </div>
             </div>
         </div>

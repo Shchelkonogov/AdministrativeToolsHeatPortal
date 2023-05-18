@@ -1,6 +1,6 @@
 package ru.tecon.admTools.systemParams.cdi.converter;
 
-import ru.tecon.admTools.systemParams.cdi.DefaultValuesSessionMB;
+import ru.tecon.admTools.systemParams.cdi.scope.application.ObjectTypeController;
 import ru.tecon.admTools.systemParams.model.ObjectType;
 
 import javax.el.ValueExpression;
@@ -11,6 +11,7 @@ import javax.faces.convert.FacesConverter;
 
 /**
  * Конвертер для выбора типа объекта
+ *
  * @author Maksim Shchelkonogov
  */
 @FacesConverter("objectTypeConverter")
@@ -19,9 +20,9 @@ public class ObjectTypeConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         ValueExpression vex = context.getApplication().getExpressionFactory()
-                .createValueExpression(context.getELContext(), "#{defaultValuesSession}", DefaultValuesSessionMB.class);
+                .createValueExpression(context.getELContext(), "#{objectTypeControllerApplication}", ObjectTypeController.class);
 
-        DefaultValuesSessionMB defaultValues = (DefaultValuesSessionMB) vex.getValue(context.getELContext());
+        ObjectTypeController defaultValues = (ObjectTypeController) vex.getValue(context.getELContext());
 
         return defaultValues.getObjectTypes().stream()
                 .filter(objectType -> objectType.getId() == Integer.parseInt(value))
