@@ -263,6 +263,8 @@ public class SpecificModelMB implements Serializable {
     public void onCellEnumEdit(CellEditEvent event) {
         ((EnumerateData) selectedEnumerateItem.getAdditionalData()).getConditions().get(event.getRowIndex()).setEdited(true);
         selectedEnumerateItem.setChange(true);
+        String clientID = event.getColumn().getChildren().get(0).getClientId().replaceAll(":", "\\:");
+        PrimeFaces.current().executeScript("document.getElementById('" + clientID + "').parentNode.style.backgroundColor = 'lightgrey'");
     }
 
     /**

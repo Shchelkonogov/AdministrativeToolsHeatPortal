@@ -22,7 +22,7 @@
                                  action="#{specificModel.saveData}"
                                  onclick="PF('statusDialog').show(); PF('saveButton').disable();"
                                  oncomplete="PF('statusDialog').hide(); PF('saveButton').enable();"
-                                 update=":tabView :growl" />
+                                 update="tabView:tableForm:tableData tabView:cTableForm tabView:conditionForm :growl" />
             </td>
         </tr>
     </table>
@@ -245,7 +245,7 @@
             </h:form>
         </p:tab>
         <p:tab id="cTab" rendered="#{!specificModel.eco}" title="Перечислимые">
-            <h:form style="height: 100%; float: left; width: calc(100% - 305px);">
+            <h:form id="cTableForm" style="height: 100%; float: left; width: calc(100% - 305px);">
                 <p:dataTable id="tableDataCountable" var="data" value="#{specificModel.enumerableTableModel}"
                              selection="#{specificModel.selectedEnumerateItem}" selectionMode="single" rowKey="#{data.id}"
                              scrollable="true" scrollHeight="100%">
@@ -289,6 +289,7 @@
                             </f:facet>
                             <f:facet name="input">
                                 <h:selectOneMenu value="#{condData.conditionSer}" style="width:100%">
+                                    <f:selectItem itemLabel="Выберите..." itemValue=""/>
                                     <f:selectItems value="#{specificModel.conditions}" var="condition"
                                                    itemLabel="#{condition.name}" itemValue="#{condition.condSer}" />
                                 </h:selectOneMenu>

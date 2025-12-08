@@ -66,7 +66,9 @@ public class EnumerateData implements Serializable, Additional {
         }
 
         public void setConditionSer(String condSer) throws IOException, ClassNotFoundException {
-            this.condition = (Condition) Utils.fromString(condSer);
+            if (condSer != null) {
+                this.condition = (Condition) Utils.fromString(condSer);
+            }
         }
 
         public String getConditionSer() {
