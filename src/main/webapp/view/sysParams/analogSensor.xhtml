@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    <h:form id="analogSensorPanel" style="height: 100%;">
+        <div style="height: 50%;">
+            <p:panel id="criteriaPanel" styleClass="tc-panel" header="Критерии" style="padding-bottom: 5px;">
+                <div style="height: 100%; padding: 3px 0 3px 3px;">
+                    <p:dataTable id="criteria" value="#{analogSensor.criteriaList}" var="criteria" scrollable="true" scrollHeight="100%"
+                                 rowKey="#{criteria.id}" emptyMessage="#{global['table.empty.value']}"
+                                 widgetVar="criteriaWidget" rowIndexVar="rowIndex">
+
+                        <p:column headerText="№ п/п" width="70">
+                            <h:outputText value="#{criteria.id}"/>
+                        </p:column>
+                        <p:column headerText="Название критерия">
+                            <h:outputText value="#{criteria.name}"/>
+                        </p:column>
+                        <p:column headerText="Состояние" width="100" styleClass="center">
+                            <p:selectBooleanCheckbox id="state" value="#{criteria.state}" disabled="#{!systemParamsUtil.write}">
+                                <p:ajax listener="#{analogSensor.onChange(criteria, rowIndex)}"
+                                        onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </p:panel>
+        </div>
+        <div style="height: 50%;">
+            <p:panel id="paramSettingPanel" styleClass="tc-panel" header="Настройка параметров" style="position: relative;">
+                <div style="height: calc(100% - 6px); padding: 3px 0 3px 3px;">
+                    <h:panelGrid id="paramSettingGrid" columns="3" columnClasses="column1Class, column2Class, column3Class">
+                        <p:outputLabel value="Период отсутствия связи с объектом"/>
+                        <p:spinner value="#{analogSensor.offlineDays}" size="1" disabled="#{!systemParamsUtil.write}"/>
+                        <p:outputLabel value="сут."/>
+
+                        <p:outputLabel value="Период отсутствия динамики значений"/>
+                        <p:spinner value="#{analogSensor.dynamicLack}" size="1" disabled="#{!systemParamsUtil.write}"/>
+                        <p:outputLabel value="сут."/>
+
+                        <p:outputLabel value="Отклонение Tнв на"/>
+                        <p:spinner value="#{analogSensor.deltaTnv}" size="1" disabled="#{!systemParamsUtil.write}"/>
+                        <p:outputLabel value="град."/>
+                    </h:panelGrid>
+                </div>
+
+                <f:facet name="actions">
+                    <p:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default tc-success tc-no-loading tc-small"
+                                   onclick="PF('statusDialog').show();" rendered="#{systemParamsUtil.write}"
+                                   action="#{analogSensor.onSaveChanges()}"
+                                   update="analogSensorPanel:paramSettingGrid growl"
+                                   oncomplete="PF('statusDialog').hide();">
+                        <h:outputText styleClass="ui-icon pi pi-save"/>
+                    </p:commandLink>
+                </f:facet>
+            </p:panel>
+        </div>
+    </h:form>
+</ui:composition>

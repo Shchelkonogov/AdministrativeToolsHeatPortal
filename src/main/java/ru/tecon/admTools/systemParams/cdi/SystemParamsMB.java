@@ -50,6 +50,7 @@ public class SystemParamsMB implements Serializable {
             {"Переключение сезона", new SystemParamsCategories("/view/sysParams/seasonChange.xhtml", "seasonChangeMB")},
             {"Настройка типа параметра", new SystemParamsCategories("/view/sysParams/paramTypeSetting.xhtml", "paramTypeSetting")},
             {"Обобщенная модель", new SystemParamsCategories("/view/sysParams/genModel.xhtml", "genModelMB")},
+            {"Критерии работоспособности аналоговых датчиков", new SystemParamsCategories("/view/sysParams/analogSensor.xhtml", "analogSensor")},
             {"Прочее", new SystemParamsCategories("/view/sysParams/other.xhtml")},
             {"Фоновые процессы", new SystemParamsCategories("/view/sysParams/jobs.xhtml", "jobs")},
             {"Источники данных", new SystemParamsCategories("/view/sysParams/dataSource.xhtml", "dataSourceMB")},

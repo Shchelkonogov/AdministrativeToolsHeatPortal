@@ -183,6 +183,16 @@ html body .custom.ui-button.ui-state-loading.ui-button-text-only .ui-icon-loadin
     height: calc(100% - 80px) !important;
 }
 
+/*Задал размеры панелей в форме "Критерии работоспособности аналоговых датчиков"*/
+
+#analogSensorPanel\:criteria {
+    height: 100%;
+}
+
+#analogSensorPanel\:criteria > .ui-datatable-scrollable-body {
+    height: calc(100% - 35px) !important;
+}
+
 /*Задал размеры панелей в форме "Структура" и "Обобщенная модель"*/
 
 #divisionPanel\:structType,
