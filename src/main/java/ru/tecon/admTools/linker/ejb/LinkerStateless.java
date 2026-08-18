@@ -45,6 +45,7 @@ public class LinkerStateless {
     private static final int port = 1337;
     private static final List<String> path = List.of("api", "Linker", "CheckObjectLicense");
 
+    private static final String SEL_REDIRECT = "select * from m_adm.get_td_application_url(?)";
     private final static String SELECT_LINKED_OBJECTS_DATA = "select * from lnk_0001t.sel_linked_object(?, '', '', cast(0 as smallint), ?);";
     private final static String SELECT_RECOUNT_DATA = "select * from lnk_0001t.sel_obj_recalc_mode(?, ?, ?);";
     private final static String PROCEDURE_RECOUNT_PRESSURE = "call lnk_0001t.recalc_pressure(?, ?, ?, ?);";
@@ -94,6 +95,27 @@ public class LinkerStateless {
 
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;
+
+    /**
+     * Получение url для перехода
+     *
+     * @param name имя свойства для перехода
+     * @return url
+     */
+    public String getRedirectUrl(String name) {
+        try (Connection connect = ds.getConnection();
+             PreparedStatement stm = connect.prepareStatement(SEL_REDIRECT)) {
+            stm.setString(1, name);
+
+            ResultSet res = stm.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.WARNING, "error load catalog types", e);
+        }
+        return "";
+    }
 
     /**
      * Загрузка линкованных данных, закладка "Линкованные объекты / Объекты"

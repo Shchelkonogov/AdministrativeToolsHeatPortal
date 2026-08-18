@@ -1621,14 +1621,12 @@ public class LinkerControllerWS implements Serializable {
     }
 
     public void openReport(int id) {
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        String contextPath = externalContext.getRequestContextPath();
-
         if (inIframe) {
-            HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-            String url = request.getScheme() + "://" + request.getLocalAddr() + ":" + request.getLocalPort() + contextPath + "/linker/report?objectId=" + id;
+            String url = linkerBean.getRedirectUrl("linkerReport").replace("[objectId]", String.valueOf(id));
             PrimeFaces.current().executeScript("window.parent.postMessage({fileUrl: '" + url + "'}, '*');");
         } else {
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            String contextPath = externalContext.getRequestContextPath();
             PrimeFaces.current().executeScript("window.open('" + contextPath + "/linker/report?objectId=" + id + "', '_blank').focus();");
         }
     }
