@@ -1,0 +1,7 @@
+#reliabilityLimitPanel\:limit {
+    height: 100%;
+}
+
+#reliabilityLimitPanel\:limit > .ui-datatable-scrollable-body {
+    height: calc(100% - 70px) !important;
+}
