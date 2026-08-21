@@ -2,6 +2,7 @@ package ru.tecon.admTools.components.navigation.ejb;
 
 import jakarta.ejb.Local;
 import ru.tecon.admTools.components.navigation.model.ObjTypePropertyModel;
+import ru.tecon.admTools.components.navigation.model.SpObject;
 import ru.tecon.admTools.components.navigation.model.TreeNodeModel;
 
 import java.util.List;
@@ -89,4 +90,13 @@ public interface NavigationBeanLocal {
      */
     List<TreeNodeModel> getLinkTree(int objectTypeId, long searchTypeId, String searchText,
                                    String userName, String parentNode);
+
+    /**
+     * Получение значений справочника
+     *
+     * @param spId идентификатор справочника
+     * @param filterValue значение фильтрации
+     * @return список значений справочника
+     */
+    List<SpObject> getSpData(int spId, String filterValue);
 }

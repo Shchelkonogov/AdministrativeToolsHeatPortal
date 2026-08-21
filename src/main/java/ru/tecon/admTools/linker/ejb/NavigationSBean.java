@@ -6,6 +6,7 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import ru.tecon.admTools.components.navigation.ejb.NavigationBeanLocal;
 import ru.tecon.admTools.components.navigation.model.ObjTypePropertyModel;
+import ru.tecon.admTools.components.navigation.model.SpObject;
 import ru.tecon.admTools.components.navigation.model.TreeNodeModel;
 import ru.tecon.admTools.utils.AlphaNumComparator;
 
@@ -26,9 +27,10 @@ import java.util.logging.Logger;
 @Local(NavigationBeanLocal.class)
 public class NavigationSBean implements NavigationBeanLocal {
 
-    private static final String SQL_OBJECT_TYPE_PROPERTY = "select obj_prop_id, obj_prop_name " +
+    private static final String SQL_OBJECT_TYPE_PROPERTY = "select obj_prop_id, obj_prop_name, sp_header_id " +
             "from dsp_0032t.get_obj_type_props(?)";
     private static final String SELECT_ORG_TREE = "select * from lnk_0001t.sel_unlinked_obj_tree(?, ?, ?, ?) where parent = ?";
+    private static final String SEL_SP_DATA = "select sp_body_id, sp_body_name from sys_0001t.sel_sp_body(?) where lower(sp_body_name) like ? limit 50";
 
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;
@@ -99,11 +101,30 @@ public class NavigationSBean implements NavigationBeanLocal {
 
             ResultSet res = stm.executeQuery();
             while (res.next()) {
-                result.add(new ObjTypePropertyModel(res.getString(2), res.getLong(1)));
+                result.add(new ObjTypePropertyModel(res.getString(2), res.getLong(1), res.getString("sp_header_id") == null ? null : res.getInt("sp_header_id")));
             }
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Error load search types", e);
         }
+        return result;
+    }
+
+    @Override
+    public List<SpObject> getSpData(int spId, String filterValue) {
+        List<SpObject> result = new ArrayList<>();
+        try (Connection connect = ds.getConnection();
+             PreparedStatement stm = connect.prepareStatement(SEL_SP_DATA)) {
+            stm.setInt(1, spId);
+            stm.setString(2, filterValue == null ? "%%" : "%" + filterValue + "%");
+
+            ResultSet res = stm.executeQuery();
+            while (res.next()) {
+                result.add(new SpObject(res.getLong("sp_body_id"), res.getString("sp_body_name")));
+            }
+        } catch (SQLException e) {
+            logger.log(Level.WARNING, "Error load sp values", e);
+        }
+
         return result;
     }
 }

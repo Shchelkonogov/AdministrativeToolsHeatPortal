@@ -12,6 +12,7 @@ import org.primefaces.component.selectonemenu.SelectOneMenu;
 import ru.tecon.admTools.components.navigation.ejb.NavigationBeanLocal;
 import ru.tecon.admTools.components.navigation.model.LazyLoadingTreeNode;
 import ru.tecon.admTools.components.navigation.model.ObjTypePropertyModel;
+import ru.tecon.admTools.components.navigation.model.SpObject;
 import ru.tecon.admTools.components.navigation.model.TreeNodeModel;
 import ru.tecon.admTools.systemParams.cdi.SystemParamsUtilMB;
 import ru.tecon.admTools.systemParams.cdi.scope.application.ObjectTypeController;
@@ -33,6 +34,8 @@ import java.util.logging.Logger;
  */
 @FacesComponent("navigationComponentWS")
 public class NavigationComponentWS extends UIComponentBase implements NamingContainer {
+
+    private static final String DEFAULT_SP_NAME = "Выберите справочник";
 
     private static final Logger logger = Logger.getLogger(NavigationComponentWS.class.getName());
 
@@ -179,6 +182,12 @@ public class NavigationComponentWS extends UIComponentBase implements NamingCont
         // Установка текста поиска
         searchTextUI.setValue("");
 
+        if (isSearchBySp()) {
+            setSearchBySpName("");
+            handleFilterChange();
+            PrimeFaces.current().executeScript("$('#linkerForm\\\\:linkerTabView\\\\:navigate\\\\:overlay .ui-button-text').text('" + DEFAULT_SP_NAME + "')");
+        }
+
         reloadOrgTree();
     }
 
@@ -205,6 +214,64 @@ public class NavigationComponentWS extends UIComponentBase implements NamingCont
             }
         }
         return "";
+    }
+
+    /**
+     * Метод вызывается с сервера при каждом изменении текста в поиске
+     */
+    public void handleFilterChange() {
+        setSearchBySpList(getEjb().getSpData(getSearchBySpId(), getSearchBySpName()));
+    }
+
+    /**
+     * Метод вызывается с сервера при изменении выбора значения в списке справочников
+     */
+    public void handleValueChange() {
+        Long selectedSp = getSelectedSp();
+        for (SpObject spObject: getSearchBySpList()) {
+            if (spObject.getId() == selectedSp) {
+                PrimeFaces.current().executeScript("$('#linkerForm\\\\:linkerTabView\\\\:navigate\\\\:overlay .ui-button-text').text('" + spObject.getName() + "')");
+                break;
+            }
+        }
+
+        searchTextUI.setValue(selectedSp);
+
+        reloadOrgTree();
+    }
+
+    /**
+     * Получение признака поиска по справочнику
+     *
+     * @return признак поиска по справочнику
+     */
+    public boolean isSearchBySp() {
+        long selectedSearch = getSelectedSearch();
+        List<ObjTypePropertyModel> searchList = getSearchList();
+
+        for (ObjTypePropertyModel item: searchList) {
+            if (item.getObjTypeId() == selectedSearch) {
+                return item.getSpHeaderId() != null;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Получение значения справочника
+     *
+     * @return значение справочника
+     */
+    public Integer getSearchBySpId() {
+        long selectedSearch = getSelectedSearch();
+        List<ObjTypePropertyModel> searchList = getSearchList();
+
+        for (ObjTypePropertyModel item: searchList) {
+            if (item.getObjTypeId() == selectedSearch) {
+                return item.getSpHeaderId();
+            }
+        }
+        return null;
     }
 
     public String isActiveTree(String treeType) {
@@ -237,6 +304,14 @@ public class NavigationComponentWS extends UIComponentBase implements NamingCont
         getStateHelper().put("selectedSearch", selectedSearch);
     }
 
+    public Long getSelectedSp() {
+        return (Long) getStateHelper().get("selectedSp");
+    }
+
+    public void setSelectedSp(Long selectedSp) {
+        getStateHelper().put("selectedSp", selectedSp);
+    }
+
     public InputText getSearchTextUI() {
         return searchTextUI;
     }
@@ -256,6 +331,23 @@ public class NavigationComponentWS extends UIComponentBase implements NamingCont
 
     public String getSelectedTab() {
         return (String) getStateHelper().get("selectedTab");
+    }
+
+    public String getSearchBySpName() {
+        return (String) getStateHelper().get("searchBySpName");
+    }
+
+    public void setSearchBySpName(String searchBySpName) {
+        getStateHelper().put("searchBySpName", searchBySpName);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<SpObject> getSearchBySpList() {
+        return (List<SpObject>) getStateHelper().get("searchBySpList");
+    }
+
+    public void setSearchBySpList(List<SpObject> searchBySpList) {
+        getStateHelper().put("searchBySpList", searchBySpList);
     }
 
     public void setSelectedTab(String selectedTab) {

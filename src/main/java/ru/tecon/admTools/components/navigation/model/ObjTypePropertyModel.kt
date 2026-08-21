@@ -8,4 +8,4 @@ import java.io.Serializable
  * @author Maksim Shchelkonogov
  * 22.09.2023
  */
-data class ObjTypePropertyModel(val objTypeValue: String? = null, val objTypeId: Long = 0) : Serializable
+data class ObjTypePropertyModel(val objTypeValue: String? = null, val objTypeId: Long = 0, val spHeaderId: Int? = null) : Serializable

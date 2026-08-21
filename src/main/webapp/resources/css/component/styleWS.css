@@ -76,7 +76,8 @@ body .tc-nav-input {
     background-color: #d9d9d9;
 }
 
-body .tc-nav-input .ui-inputfield {
+body .tc-nav-input .ui-inputfield,
+body .tc-nav-input .ui-button {
     width: 100%;
     font-size: 14px;
     height: 32px;
@@ -84,6 +85,14 @@ body .tc-nav-input .ui-inputfield {
     border-radius: 5px;
     color: #000;
     padding: 0 5px;
+}
+
+body .tc-nav-input .ui-button {
+    background-color: white;
+}
+
+body .tc-nav-input .ui-overlaypanel-content {
+    padding: 3px;
 }
 
 body .ui-tree.tc-nav-tree .ui-tree-container .ui-treenode {
