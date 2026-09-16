@@ -26,7 +26,8 @@ import java.util.logging.Logger;
 public class ReliabilityLimitSB implements ReliabilityLimitLocal {
 
     private static final String SELECT_GET_OBJECT_PATH = "select admin.get_obj_path_all(?) || ' (' || admin.get_obj_address(?) || ')'";
-    private static final String SEL_LIMIT_DATA = "select par_id, par_name, techproc_type_code, zone, measure_name, t_min_tech, t_max_tech from dsp_0102t.sel_a_params(?)";
+    private static final String SEL_LIMIT_DATA = "select par_id, par_name, par_memo, techproc_type_code, zone, measure_name, t_min_tech, t_max_tech " +
+            "from dsp_0102t.sel_a_params(?)";
     private static final String UPD_LIMIT_DATA = "call dsp_0102t.save_a_param(?, ?, ?, ?, ?)";
 
     @Inject
@@ -60,8 +61,8 @@ public class ReliabilityLimitSB implements ReliabilityLimitLocal {
             stm.setInt(1, objectID);
             ResultSet res = stm.executeQuery();
             while (res.next()) {
-                result.add(new LimitData(res.getInt("par_id"), res.getString("par_name"), res.getString("techproc_type_code"),
-                        res.getInt("zone"), res.getString("measure_name"),
+                result.add(new LimitData(res.getInt("par_id"), res.getString("par_name"), res.getString("par_memo"),
+                        res.getString("techproc_type_code"), res.getInt("zone"), res.getString("measure_name"),
                         res.getString("t_min_tech") == null ? null : res.getDouble("t_min_tech"),
                         res.getString("t_max_tech") == null ? null : res.getDouble("t_max_tech")));
             }

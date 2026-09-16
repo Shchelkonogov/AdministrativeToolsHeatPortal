@@ -13,6 +13,7 @@ public class LimitData implements Serializable {
     private final UUID id;
     private final int parId;
     private final String parName;
+    private final String parMemo;
     private final String techProcCode;
     private final int zone;
     private final String measureName;
@@ -21,10 +22,11 @@ public class LimitData implements Serializable {
 
     private boolean change;
 
-    public LimitData(int parId, String parName, String techProcCode, int zone, String measureName, Double min, Double max) {
+    public LimitData(int parId, String parName, String parMemo, String techProcCode, int zone, String measureName, Double min, Double max) {
         this.id = UUID.randomUUID();
         this.parId = parId;
         this.parName = parName;
+        this.parMemo = parMemo;
         this.techProcCode = techProcCode;
         this.zone = zone;
         this.measureName = measureName;
@@ -42,6 +44,10 @@ public class LimitData implements Serializable {
 
     public String getParName() {
         return parName;
+    }
+
+    public String getParMemo() {
+        return parMemo;
     }
 
     public String getTechProcCode() {
