@@ -97,7 +97,7 @@ public class ReliabilityLimitSB implements ReliabilityLimitLocal {
             logger.log(Level.INFO, "Update limit data");
         } catch (SQLException ex) {
             logger.log(Level.WARNING, "Error update limit data", ex);
-            throw new SystemParamException("Внутренняя ошибка сервера");
+            throw new SystemParamException(ex);
         }
     }
 }

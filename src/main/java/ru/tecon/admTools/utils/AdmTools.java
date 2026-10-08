@@ -6,12 +6,15 @@ import org.postgresql.util.PSQLException;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * @author Maksim Shchelkonogov
  * 19.05.2023
  */
 public class AdmTools {
+
+    private static final Set<String> sqlStates = Set.of("11111", "11112", "11122", "11102", "11103");
 
     @SuppressWarnings("unchecked")
     public static <T> T findBean(String beanName) {
@@ -47,11 +50,11 @@ public class AdmTools {
      * @param ex Ошибка для проверки {@link SQLException}
      */
     public static String getSQLExceptionMessage(SQLException ex) {
-        if ((ex.getSQLState() != null) &&
-                ex.getSQLState().equals("11111") &&
-                (ex instanceof PSQLException) &&
-                (((PSQLException) ex).getServerErrorMessage() != null)) {
-                return ((PSQLException) ex).getServerErrorMessage().getMessage();
+        if ((ex.getSQLState() != null)
+                && sqlStates.contains(ex.getSQLState())
+                && (ex instanceof PSQLException)
+                && (((PSQLException) ex).getServerErrorMessage() != null)) {
+            return ((PSQLException) ex).getServerErrorMessage().getMessage();
         } else {
             return "Внутренняя ошибка сервера";
         }

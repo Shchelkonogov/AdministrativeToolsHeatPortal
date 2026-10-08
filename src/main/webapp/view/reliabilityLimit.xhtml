@@ -30,7 +30,7 @@
                 <div style="height: 100%; padding: 3px 0 3px 3px;">
                     <p:dataTable id="limit" value="#{reliabilityLimit.data}" var="limit" scrollable="true" scrollHeight="100%"
                                  editable="true" editMode="cell" rowKey="#{limit.id}" emptyMessage="#{global['table.empty.value']}"
-                                 widgetVar="limitWidget" rowIndexVar="rowIndex">
+                                 widgetVar="limitWidget" rowIndexVar="rowIndex" lazy="false">
 
                         <p:ajax event="cellEdit" listener="#{reliabilityLimit.onCellEdit}" update=":growl" />
 
